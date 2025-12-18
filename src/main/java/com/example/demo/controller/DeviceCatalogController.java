@@ -5,15 +5,15 @@ import java.util.List;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.demo.model.DeviceCatalogItem;
-import com.example.demo.service.DeviceCatalogItemService;
+import com.example.demo.service.DeviceCatalogService;
 
 @RestController
 @RequestMapping("/devices")
 public class DeviceCatalogController {
 
-    private final DeviceCatalogItemService service;
+    private final DeviceCatalogService service;
 
-    public DeviceCatalogController(DeviceCatalogItemService service) {
+    public DeviceCatalogController(DeviceCatalogService service) {
         this.service = service;
     }
 

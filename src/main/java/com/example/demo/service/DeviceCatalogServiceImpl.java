@@ -8,11 +8,11 @@ import com.example.demo.model.DeviceCatalogItem;
 import com.example.demo.repository.DeviceCatalogItemRepository;
 
 @Service
-public class DeviceCatalogItemServiceImpl implements DeviceCatalogItemService {
+public class DeviceCatalogServiceImpl implements DeviceCatalogService {
     
     private final DeviceCatalogItemRepository repo;
 
-    public DeviceCatalogItemServiceImpl(DeviceCatalogItemRepository repo){
+    public DeviceCatalogServiceImpl(DeviceCatalogItemRepository repo){
         this.repo=repo;
     }
     @Override
