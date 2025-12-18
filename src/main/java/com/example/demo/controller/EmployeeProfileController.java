@@ -12,33 +12,37 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.model.EmployeeProfile;
-import com.example.demo.services.EmployeeProfileService;
+import com.example.demo.service.EmployeeProfileService;
 
 @RestController
 public class EmployeeProfileController {
 
     private final EmployeeProfileService es;
 
+   
     public EmployeeProfileController(EmployeeProfileService es) {
         this.es = es;
     }
 
+    
     @PostMapping("/postemployee")
     public EmployeeProfile postemployee(@RequestBody EmployeeProfile emp) {
         return es.createEmployee(emp);
     }
 
-
+    
     @GetMapping("/getallemployees")
     public List<EmployeeProfile> getall() {
         return es.getAllEmployee();
     }
 
-
+   
     @GetMapping("/getemployee/{id}")
     public Optional<EmployeeProfile> getbyid(@PathVariable Long id) {
         return es.getEmployeeById(id);
     }
+
+    
     @PutMapping("/updateemployeestatus/{id}")
     public EmployeeProfile updateStatus(@PathVariable Long id,@RequestParam boolean active) {
         return es.UpdateEmployeeStatus(id, active);
