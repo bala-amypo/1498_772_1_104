@@ -1,13 +1,16 @@
 package com.example.demo.service;
 
-import java.util.Optional;
-
 import com.example.demo.model.IssuedDeviceRecord;
 
-public interface IssuedDeviceRecordService {
-    
-    IssuedDeviceRecord issueDevice(IssuedDeviceRecord record);
-    IssuedDeviceRecord returnDevice(Long recordId);
-    Optional<IssuedDeviceRecord> getIssuedDevicesByEmployee(Long employeeId);
+import java.util.List;
 
+public interface IssuedDeviceRecordService {
+
+    IssuedDeviceRecord issueDevice(IssuedDeviceRecord record);
+
+    IssuedDeviceRecord returnDevice(Long recordId);
+
+    List<IssuedDeviceRecord> getIssuedDevicesByEmployee(Long employeeId);
+
+    IssuedDeviceRecord getIssuedDeviceById(Long id);
 }

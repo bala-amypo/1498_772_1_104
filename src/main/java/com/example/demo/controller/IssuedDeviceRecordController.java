@@ -1,33 +1,57 @@
 package com.example.demo.controller;
-import java.util.Optional;
-
-import org.springframework.web.bind.annotation.*;
 
 import com.example.demo.model.IssuedDeviceRecord;
 import com.example.demo.service.IssuedDeviceRecordService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
-@RequestMapping("/issued-devices")
+@RequestMapping("/api/issued-devices")
+@Tag(name = "Issued Device Records Endpoints")
 public class IssuedDeviceRecordController {
 
-    private final IssuedDeviceRecordService service;
+    @Autowired
+    private IssuedDeviceRecordService issuedService;
 
-    public IssuedDeviceRecordController(IssuedDeviceRecordService service) {
-        this.service = service;
-    }
-
+    @Operation(summary = "Issue a device to an employee")
     @PostMapping
-    public IssuedDeviceRecord issue(@RequestBody IssuedDeviceRecord record) {
-        return service.issueDevice(record);
+    public ResponseEntity<IssuedDeviceRecord> issueDevice(
+            @Valid @RequestBody IssuedDeviceRecord record
+    ) {
+        return ResponseEntity.ok(issuedService.issueDevice(record));
     }
 
-    @PutMapping("/{id}")
-    public IssuedDeviceRecord returnDevice(@PathVariable Long id) {
-        return service.returnDevice(id);
+    @Operation(summary = "Return an issued device")
+    @PutMapping("/{id}/return")
+    public ResponseEntity<IssuedDeviceRecord> returnDevice(
+            @PathVariable Long id
+    ) {
+        return ResponseEntity.ok(issuedService.returnDevice(id));
     }
 
+    @Operation(summary = "Get issued devices by employee")
     @GetMapping("/employee/{employeeId}")
-    public Optional<IssuedDeviceRecord> getByEmployee(@PathVariable Long employeeId) {
-        return service.getIssuedDevicesByEmployee(employeeId);
+    public ResponseEntity<List<IssuedDeviceRecord>> getIssuedDevicesByEmployee(
+            @PathVariable Long employeeId
+    ) {
+        return ResponseEntity.ok(
+                issuedService.getIssuedDevicesByEmployee(employeeId)
+        );
+    }
+
+    @Operation(summary = "Get issued device record by ID")
+    @GetMapping("/{id}")
+    public ResponseEntity<IssuedDeviceRecord> getIssuedDeviceById(
+            @PathVariable Long id
+    ) {
+        return ResponseEntity.ok(
+                issuedService.getIssuedDeviceById(id)
+        );
     }
 }
