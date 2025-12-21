@@ -32,7 +32,7 @@ public class IssuedDeviceRecord {
     @Column(nullable = false)
     private String status = "ISSUED";
 
-    /* Constructors */
+   
 
     public IssuedDeviceRecord() {
     }
