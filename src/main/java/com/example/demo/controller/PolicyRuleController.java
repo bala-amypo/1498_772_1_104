@@ -17,12 +17,9 @@ import java.util.List;
 @Tag(name = "Policy Rules Endpoints")
 public class PolicyRuleController {
 
-    private final PolicyRuleService policyRuleService;
+    @Autowired
+    private PolicyRuleService policyRuleService;
 
-    // Constructor injection
-    public PolicyRuleController(PolicyRuleService policyRuleService) {
-        this.policyRuleService = policyRuleService;
-    }
     @Operation(summary = "Create a new policy rule")
     @PostMapping
     public ResponseEntity<PolicyRule> createRule(
