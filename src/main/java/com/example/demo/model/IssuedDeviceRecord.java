@@ -13,7 +13,6 @@ public class IssuedDeviceRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /* Relationships */
 
     @ManyToOne
     @JoinColumn(name = "employee_id", nullable = false)

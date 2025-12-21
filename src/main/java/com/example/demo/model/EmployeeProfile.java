@@ -46,7 +46,7 @@ public class EmployeeProfile {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    /* Constructors */
+    
 
     public EmployeeProfile() {
     }
@@ -74,7 +74,7 @@ public class EmployeeProfile {
         }
     }
 
-    /* Getters and Setters */
+    
 
     public Long getId() { return id; }
 
