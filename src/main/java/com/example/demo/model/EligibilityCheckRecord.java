@@ -33,7 +33,7 @@ public class EligibilityCheckRecord {
     @Column(nullable = false, updatable = false)
     private LocalDateTime checkedAt;
 
-    /* Constructors */
+   
 
     public EligibilityCheckRecord() {}
 
@@ -54,7 +54,6 @@ public class EligibilityCheckRecord {
         this.checkedAt = LocalDateTime.now();
     }
 
-    /* Getters & Setters */
 
     public Long getId() { return id; }
 

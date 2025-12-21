@@ -46,7 +46,7 @@ public class DeviceCatalogItem {
         this.createdAt = LocalDateTime.now();
     }
 
-    /* Getters & Setters */
+   
 
     public Long getId() { return id; }
 
