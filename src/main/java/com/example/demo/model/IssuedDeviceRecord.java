@@ -14,11 +14,11 @@ public class IssuedDeviceRecord {
     private Long id;
 
 
-    @ManyToOne
+   
     @JoinColumn(name = "employee_id", nullable = false)
     private EmployeeProfile employee;
 
-    @ManyToOne
+   
     @JoinColumn(name = "device_item_id", nullable = false)
     private DeviceCatalogItem deviceItem;
 
