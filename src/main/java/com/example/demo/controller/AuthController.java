@@ -22,7 +22,7 @@ public class AuthController {
     @Autowired
     private UserAccountRepository userAccountRepository;
 
-    /* ---------------- REGISTER ---------------- */
+    
 
     @Operation(summary = "Register a new user")
     @PostMapping("/register")
@@ -39,7 +39,7 @@ public class AuthController {
         return new ResponseEntity<>(saved, HttpStatus.CREATED);
     }
 
-    /* ---------------- LOGIN ---------------- */
+   
 
     @Operation(summary = "Login user")
     @PostMapping("/login")
