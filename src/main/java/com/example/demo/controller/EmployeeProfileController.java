@@ -22,9 +22,7 @@ public class EmployeeProfileController {
 
     @Operation(summary = "Create a new employee profile")
     @PostMapping
-    public ResponseEntity<EmployeeProfile> createEmployee(
-            @Valid @RequestBody EmployeeProfile employee
-    ) {
+    public ResponseEntity<EmployeeProfile> createEmployee(@Valid @RequestBody EmployeeProfile employee) {
         return new ResponseEntity<>(
                 employeeService.createEmployee(employee),
                 HttpStatus.CREATED
@@ -39,9 +37,7 @@ public class EmployeeProfileController {
 
     @Operation(summary = "Get employee by ID")
     @GetMapping("/{id}")
-    public ResponseEntity<EmployeeProfile> getEmployeeById(
-            @PathVariable Long id
-    ) {
+    public ResponseEntity<EmployeeProfile> getEmployeeById(@PathVariable Long id) {
         return ResponseEntity.ok(employeeService.getEmployeeById(id));
     }
 
