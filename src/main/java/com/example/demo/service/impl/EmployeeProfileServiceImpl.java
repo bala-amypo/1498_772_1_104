@@ -5,60 +5,64 @@ import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.EmployeeProfile;
 import com.example.demo.repository.EmployeeProfileRepository;
 import com.example.demo.service.EmployeeProfileService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
-@Service
-public class EmployeeProfileServiceImpl
-        implements EmployeeProfileService {
+public class EmployeeProfileServiceImpl implements EmployeeProfileService {
 
-    @Autowired
-    private EmployeeProfileRepository employeeRepository;
+    private final EmployeeProfileRepository employeeProfileRepository;
+
+    // ✅ Constructor Injection ONLY
+    public EmployeeProfileServiceImpl(EmployeeProfileRepository employeeProfileRepository) {
+        this.employeeProfileRepository = employeeProfileRepository;
+    }
 
     @Override
     public EmployeeProfile createEmployee(EmployeeProfile employee) {
 
-        if (employeeRepository.findByEmployeeId(employee.getEmployeeId()).isPresent()) {
+        // 🔴 Duplicate Employee ID check
+        Optional<EmployeeProfile> byEmployeeId =
+                employeeProfileRepository.findByEmployeeId(employee.getEmployeeId());
+        if (byEmployeeId.isPresent()) {
             throw new BadRequestException("EmployeeId already exists");
         }
 
-        if (employeeRepository.findByEmail(employee.getEmail()).isPresent()) {
+        // 🔴 Duplicate Email check
+        Optional<EmployeeProfile> byEmail =
+                employeeProfileRepository.findByEmail(employee.getEmail());
+        if (byEmail.isPresent()) {
             throw new BadRequestException("Email already exists");
         }
 
+        // Default job role
         if (employee.getJobRole() == null) {
             employee.setJobRole("STAFF");
         }
 
-        return employeeRepository.save(employee);
+        return employeeProfileRepository.save(employee);
     }
 
     @Override
     public EmployeeProfile getEmployeeById(Long id) {
-        return employeeRepository.findById(id)
+        return employeeProfileRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Employee not found"));
     }
 
     @Override
     public List<EmployeeProfile> getAllEmployees() {
-        return employeeRepository.findAll();
+        return employeeProfileRepository.findAll();
     }
 
     @Override
     public EmployeeProfile updateEmployeeStatus(Long id, boolean active) {
 
-        EmployeeProfile employee = getEmployeeById(id);
+        EmployeeProfile employee = employeeProfileRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Employee not found"));
+
         employee.setActive(active);
-        return employeeRepository.save(employee);
-    }
-
-    @Override
-    public void deleteEmployee(Long id) {
-
-        EmployeeProfile employee = getEmployeeById(id);
-        employeeRepository.delete(employee);
+        return employeeProfileRepository.save(employee);
     }
 }

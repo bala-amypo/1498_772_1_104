@@ -2,67 +2,125 @@ package com.example.demo.service.impl;
 
 import com.example.demo.exception.BadRequestException;
 import com.example.demo.exception.ResourceNotFoundException;
-import com.example.demo.model.EmployeeProfile;
-import com.example.demo.repository.EmployeeProfileRepository;
-import com.example.demo.service.EmployeeProfileService;
+import com.example.demo.model.*;
+import com.example.demo.repository.*;
+import com.example.demo.service.EligibilityCheckService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
-public class EmployeeProfileServiceImpl implements EmployeeProfileService {
+@Service
+public class EligibilityCheckServiceImpl
+        implements EligibilityCheckService {
 
-    private final EmployeeProfileRepository employeeProfileRepository;
+    @Autowired
+    private EmployeeProfileRepository employeeRepository;
 
-    // ✅ Constructor Injection ONLY
-    public EmployeeProfileServiceImpl(EmployeeProfileRepository employeeProfileRepository) {
-        this.employeeProfileRepository = employeeProfileRepository;
-    }
+    @Autowired
+    private DeviceCatalogItemRepository deviceRepository;
 
-    @Override
-    public EmployeeProfile createEmployee(EmployeeProfile employee) {
+    @Autowired
+    private IssuedDeviceRecordRepository issuedRepository;
 
-        // 🔴 Duplicate Employee ID check
-        Optional<EmployeeProfile> byEmployeeId =
-                employeeProfileRepository.findByEmployeeId(employee.getEmployeeId());
-        if (byEmployeeId.isPresent()) {
-            throw new BadRequestException("EmployeeId already exists");
-        }
+    @Autowired
+    private PolicyRuleRepository policyRuleRepository;
 
-        // 🔴 Duplicate Email check
-        Optional<EmployeeProfile> byEmail =
-                employeeProfileRepository.findByEmail(employee.getEmail());
-        if (byEmail.isPresent()) {
-            throw new BadRequestException("Email already exists");
-        }
-
-        // Default job role
-        if (employee.getJobRole() == null) {
-            employee.setJobRole("STAFF");
-        }
-
-        return employeeProfileRepository.save(employee);
-    }
+    @Autowired
+    private EligibilityCheckRecordRepository eligibilityRepository;
 
     @Override
-    public EmployeeProfile getEmployeeById(Long id) {
-        return employeeProfileRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Employee not found"));
-    }
+    public EligibilityCheckRecord validateEligibility(
+            Long employeeId,
+            Long deviceItemId
+    ) {
 
-    @Override
-    public List<EmployeeProfile> getAllEmployees() {
-        return employeeProfileRepository.findAll();
-    }
-
-    @Override
-    public EmployeeProfile updateEmployeeStatus(Long id, boolean active) {
-
-        EmployeeProfile employee = employeeProfileRepository.findById(id)
+        EmployeeProfile employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Employee not found"));
 
-        employee.setActive(active);
-        return employeeProfileRepository.save(employee);
+        DeviceCatalogItem device = deviceRepository.findById(deviceItemId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Device not found"));
+
+        String reason;
+        boolean eligible = true;
+
+        /* a. employee active check */
+        if (!employee.getActive()) {
+            eligible = false;
+            reason = "Employee is inactive";
+            return save(employee, device, eligible, reason);
+        }
+
+        /* b. device active check */
+        if (!device.getActive()) {
+            eligible = false;
+            reason = "Device is inactive";
+            return save(employee, device, eligible, reason);
+        }
+
+        /* c. duplicate active issuance check */
+        if (!issuedRepository
+                .findActiveByEmployeeAndDevice(employeeId, deviceItemId)
+                .isEmpty()) {
+
+            eligible = false;
+            reason = "Device already issued to employee";
+            return save(employee, device, eligible, reason);
+        }
+
+        /* d. device maxAllowedPerEmployee check */
+        Long activeCount =
+                issuedRepository.countActiveDevicesForEmployee(employeeId);
+
+        if (activeCount >= device.getMaxAllowedPerEmployee()) {
+            eligible = false;
+            reason = "Device limit exceeded for employee";
+            return save(employee, device, eligible, reason);
+        }
+
+        /* e–f. policy rule checks */
+        List<PolicyRule> activeRules =
+                policyRuleRepository.findByActiveTrue();
+
+        for (PolicyRule rule : activeRules) {
+
+            boolean roleMatch =
+                    rule.getAppliesToRole() == null ||
+                    rule.getAppliesToRole().equals(employee.getJobRole());
+
+            boolean deptMatch =
+                    rule.getAppliesToDepartment() == null ||
+                    rule.getAppliesToDepartment().equals(employee.getDepartment());
+
+            if (roleMatch && deptMatch) {
+                if (activeCount >= rule.getMaxDevicesAllowed()) {
+                    eligible = false;
+                    reason = "Policy rule violated: " + rule.getRuleCode();
+                    return save(employee, device, eligible, reason);
+                }
+            }
+        }
+
+        /* g. eligible case */
+        reason = "Employee eligible for device issuance";
+        return save(employee, device, true, reason);
+    }
+
+    private EligibilityCheckRecord save(
+            EmployeeProfile employee,
+            DeviceCatalogItem device,
+            boolean eligible,
+            String reason
+    ) {
+        EligibilityCheckRecord record =
+                new EligibilityCheckRecord(employee, device, eligible, reason);
+        return eligibilityRepository.save(record);
+    }
+
+    @Override
+    public List<EligibilityCheckRecord> getChecksByEmployee(Long employeeId) {
+        return eligibilityRepository.findByEmployeeId(employeeId);
     }
 }
