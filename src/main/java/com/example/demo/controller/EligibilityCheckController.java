@@ -17,7 +17,7 @@ public class EligibilityCheckController {
 
     private final EligibilityCheckService service;
 
-    public EligibilityCheckRecordController(EligibilityCheckService service) {
+    public EligibilityCheckController(EligibilityCheckService service) {
         this.service = service;
     }
 
