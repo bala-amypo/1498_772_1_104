@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.EligibilityCheckRecord;
-import com.example.demo.service.EligibilityCheckRecordService;
+import com.example.demo.service.EligibilityCheckService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
@@ -13,11 +13,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/eligibility-checks")
 @Tag(name = "Eligibility Check Endpoints")
-public class EligibilityCheckRecordController {
+public class EligibilityCheckController {
 
-    private final EligibilityCheckRecordService service;
+    private final EligibilityCheckService service;
 
-    public EligibilityCheckRecordController(EligibilityCheckRecordService service) {
+    public EligibilityCheckRecordController(EligibilityCheckService service) {
         this.service = service;
     }
 
