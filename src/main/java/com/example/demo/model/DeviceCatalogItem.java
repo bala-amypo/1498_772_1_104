@@ -1,11 +1,6 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Table(
@@ -20,49 +15,62 @@ public class DeviceCatalogItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
     @Column(nullable = false, unique = true)
     private String deviceCode;
 
-    @NotBlank
     @Column(nullable = false)
-    private String deviceName;
+    private String deviceType;
 
-    @NotNull
-    @Positive
+    @Column(nullable = false)
+    private String model;
+
     @Column(nullable = false)
     private Integer maxAllowedPerEmployee;
 
     @Column(nullable = false)
     private Boolean active = true;
 
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
+    // No-args constructor
     public DeviceCatalogItem() {}
 
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
+    // Core fields constructor
+    public DeviceCatalogItem(String deviceCode, String deviceType, String model,
+                             Integer maxAllowedPerEmployee) {
+        this.deviceCode = deviceCode;
+        this.deviceType = deviceType;
+        this.model = model;
+        this.maxAllowedPerEmployee = maxAllowedPerEmployee;
+        this.active = true;
     }
 
-   
-
+    // Getters & Setters
     public Long getId() { return id; }
-
-    public String getDeviceCode() { return deviceCode; }
-    public void setDeviceCode(String deviceCode) { this.deviceCode = deviceCode; }
-
-    public String getDeviceName() { return deviceName; }
-    public void setDeviceName(String deviceName) { this.deviceName = deviceName; }
-
-    public Integer getMaxAllowedPerEmployee() { return maxAllowedPerEmployee; }
+    public String getDeviceCode() {
+         return deviceCode; 
+         }
+    public void setDeviceCode(String deviceCode) {
+     this.deviceCode = deviceCode; 
+     }
+    public String getDeviceType() {
+     return deviceType; 
+     }
+    public void setDeviceType(String deviceType) {
+     this.deviceType = deviceType; 
+     }
+    public String getModel() {
+         return model;
+          }
+    public void setModel(String model) {
+         this.model = model; 
+         }
+    public Integer getMaxAllowedPerEmployee() {
+         return maxAllowedPerEmployee; 
+         }
     public void setMaxAllowedPerEmployee(Integer maxAllowedPerEmployee) {
         this.maxAllowedPerEmployee = maxAllowedPerEmployee;
     }
-
-    public Boolean getActive() { return active; }
+    public Boolean getActive() { 
+        return active; 
+        }
     public void setActive(Boolean active) { this.active = active; }
-
-    public LocalDateTime getCreatedAt() { return createdAt; }
 }
