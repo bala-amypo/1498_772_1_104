@@ -36,8 +36,9 @@ public class AuthServiceImpl implements AuthService {
         user.setFullName(request.getFullName());
         user.setEmail(request.getEmail());
         user.setRole(request.getRole());
-        user.setActive(true);
         user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
+        user.setActive(true);
+
         return userAccountRepository.save(user);
     }
 
@@ -45,10 +46,17 @@ public class AuthServiceImpl implements AuthService {
     public AuthResponse login(AuthRequest request) {
         UserAccount user = userAccountRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new BadRequestException("Invalid credentials"));
+
+        if (!user.getActive()) {
+            throw new BadRequestException("User account not active");
+        }
+
         if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
             throw new BadRequestException("Invalid credentials");
         }
+
         String token = jwtTokenProvider.generateToken(user);
+
         return new AuthResponse(token, user.getId(), user.getEmail(), user.getRole());
     }
 }
