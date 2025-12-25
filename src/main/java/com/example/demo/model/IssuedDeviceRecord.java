@@ -1,8 +1,6 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-
 import java.time.LocalDate;
 
 @Entity
@@ -13,7 +11,7 @@ public class IssuedDeviceRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
+    // Many-to-One relationships
     @ManyToOne
     @JoinColumn(name = "employee_id", nullable = false)
     private EmployeeProfile employee;
@@ -22,7 +20,6 @@ public class IssuedDeviceRecord {
     @JoinColumn(name = "device_item_id", nullable = false)
     private DeviceCatalogItem deviceItem;
 
-    @NotNull
     @Column(nullable = false)
     private LocalDate issuedDate;
 
@@ -30,37 +27,72 @@ public class IssuedDeviceRecord {
     private LocalDate returnedDate;
 
     @Column(nullable = false)
-    private String status = "ISSUED";
+    private String status; // ISSUED / RETURNED
 
-   
+    /* ================== CONSTRUCTORS ================== */
 
     public IssuedDeviceRecord() {
+        // default constructor
     }
 
-    public IssuedDeviceRecord(
-            EmployeeProfile employee,
-            DeviceCatalogItem deviceItem
-    ) {
+    public IssuedDeviceRecord(EmployeeProfile employee,
+                              DeviceCatalogItem deviceItem,
+                              LocalDate issuedDate,
+                              LocalDate returnedDate,
+                              String status) {
         this.employee = employee;
         this.deviceItem = deviceItem;
-        this.issuedDate = LocalDate.now();
-        this.status = "ISSUED";
+        this.issuedDate = issuedDate;
+        this.returnedDate = returnedDate;
+        this.status = (status != null) ? status : "ISSUED";
     }
 
-    /* Getters & Setters */
+    /* ================== LIFECYCLE CALLBACK ================== */
 
-    public Long getId() { return id; }
+    @PrePersist
+    protected void onCreate() {
+        if (this.status == null) {
+            this.status = "ISSUED";
+        }
+        if (this.issuedDate == null) {
+            this.issuedDate = LocalDate.now();
+        }
+    }
 
-    public EmployeeProfile getEmployee() { return employee; }
-    public void setEmployee(EmployeeProfile employee) { this.employee = employee; }
+    /* ================== GETTERS & SETTERS ================== */
 
-    public DeviceCatalogItem getDeviceItem() { return deviceItem; }
-    public void setDeviceItem(DeviceCatalogItem deviceItem) { this.deviceItem = deviceItem; }
+    public Long getId() {
+        return id;
+    }
 
-    public LocalDate getIssuedDate() { return issuedDate; }
-    public void setIssuedDate(LocalDate issuedDate) { this.issuedDate = issuedDate; }
+    public EmployeeProfile getEmployee() {
+        return employee;
+    }
 
-    public LocalDate getReturnedDate() { return returnedDate; }
+    public void setEmployee(EmployeeProfile employee) {
+        this.employee = employee;
+    }
+
+    public DeviceCatalogItem getDeviceItem() {
+        return deviceItem;
+    }
+
+    public void setDeviceItem(DeviceCatalogItem deviceItem) {
+        this.deviceItem = deviceItem;
+    }
+
+    public LocalDate getIssuedDate() {
+        return issuedDate;
+    }
+
+    public void setIssuedDate(LocalDate issuedDate) {
+        this.issuedDate = issuedDate;
+    }
+
+    public LocalDate getReturnedDate() {
+        return returnedDate;
+    }
+
     public void setReturnedDate(LocalDate returnedDate) {
         this.returnedDate = returnedDate;
         if (returnedDate != null) {
@@ -68,6 +100,11 @@ public class IssuedDeviceRecord {
         }
     }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = (status != null) ? status : "ISSUED";
+    }
 }

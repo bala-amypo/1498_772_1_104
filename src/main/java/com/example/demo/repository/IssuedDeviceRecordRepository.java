@@ -2,35 +2,19 @@ package com.example.demo.repository;
 
 import com.example.demo.model.IssuedDeviceRecord;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-public interface IssuedDeviceRecordRepository
-        extends JpaRepository<IssuedDeviceRecord, Long> {
+@Repository
+public interface IssuedDeviceRecordRepository extends JpaRepository<IssuedDeviceRecord, Long> {
 
-    /* CRITICAL: active ISSUED records for employee & device */
-    @Query("""
-        SELECT r FROM IssuedDeviceRecord r
-        WHERE r.employee.id = :employeeId
-          AND r.deviceItem.id = :deviceItemId
-          AND r.status = 'ISSUED'
-    """)
-    List<IssuedDeviceRecord> findActiveByEmployeeAndDevice(
-            Long employeeId,
-            Long deviceItemId
-    );
-
-    @Query("""
-        SELECT COUNT(r) FROM IssuedDeviceRecord r
-        WHERE r.employee.id = :employeeId
-          AND r.status = 'ISSUED'
-    """)
-    Long countActiveDevicesForEmployee(Long employeeId);
-
-    @Query("""
-        SELECT r FROM IssuedDeviceRecord r
-        WHERE r.employee.id = :employeeId
-    """)
+    // Find all issued devices for a specific employee
     List<IssuedDeviceRecord> findByEmployeeId(Long employeeId);
+
+    // Find all active issued devices
+    List<IssuedDeviceRecord> findByStatus(String status);
+
+    // Find by employee and device item (optional for eligibility checks)
+    List<IssuedDeviceRecord> findByEmployeeIdAndDeviceItemIdAndStatus(Long employeeId, Long deviceItemId, String status);
 }
