@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.model.DeviceCatalogItem;
 import com.example.demo.service.DeviceCatalogService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/devices")
-
+@Tag(name = "Device Catalog Endpoints")
 public class DeviceCatalogController {
 
     private final DeviceCatalogService service;
