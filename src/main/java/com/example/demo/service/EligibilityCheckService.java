@@ -1,18 +1,16 @@
 package com.example.demo.service;
 
-import com.example.demo.model.EligibilityCheckRecord;
-
 import java.util.List;
+import com.example.demo.model.EligibilityCheckRecord;
 
 public interface EligibilityCheckService {
 
-    EligibilityCheckRecord saveCheck(EligibilityCheckRecord record);
+    // Validate if an employee is eligible to get a device
+    EligibilityCheckRecord validateEligibility(Long employeeId, Long deviceItemId);
 
-    List<EligibilityCheckRecord> getAllChecks();
-
+    // Get all eligibility check records for an employee
     List<EligibilityCheckRecord> getChecksByEmployee(Long employeeId);
 
-    List<EligibilityCheckRecord> getChecksByDevice(Long deviceId);
-
-    List<EligibilityCheckRecord> getEligibleChecks();
+    // Get a single eligibility check record by its ID
+    EligibilityCheckRecord getById(Long id);
 }

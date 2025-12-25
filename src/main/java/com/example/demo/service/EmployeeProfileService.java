@@ -1,8 +1,7 @@
 package com.example.demo.service;
 
-import com.example.demo.model.EmployeeProfile;
-
 import java.util.List;
+import com.example.demo.model.EmployeeProfile;
 
 public interface EmployeeProfileService {
 
@@ -13,4 +12,6 @@ public interface EmployeeProfileService {
     List<EmployeeProfile> getAllEmployees();
 
     EmployeeProfile updateEmployeeStatus(Long id, boolean active);
+
+    void deleteEmployee(Long id);
 }

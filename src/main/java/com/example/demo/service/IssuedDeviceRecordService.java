@@ -1,18 +1,19 @@
 package com.example.demo.service;
 
-import com.example.demo.model.IssuedDeviceRecord;
-
 import java.util.List;
+import com.example.demo.model.IssuedDeviceRecord;
 
 public interface IssuedDeviceRecordService {
 
     IssuedDeviceRecord issueDevice(IssuedDeviceRecord record);
 
-    IssuedDeviceRecord returnDevice(Long id);
+    IssuedDeviceRecord returnDevice(Long recordId);
 
-    List<IssuedDeviceRecord> getAllIssuedDevices();
+    List<IssuedDeviceRecord> getByEmployeeId(Long employeeId);
 
-    List<IssuedDeviceRecord> getActiveIssuedDevices();
+    List<IssuedDeviceRecord> getActiveByEmployeeId(Long employeeId);
 
     IssuedDeviceRecord getById(Long id);
+
+    long countActiveDevicesForEmployee(Long employeeId);
 }

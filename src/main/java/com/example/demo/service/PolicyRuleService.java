@@ -1,7 +1,8 @@
 package com.example.demo.service;
 
-import com.example.demo.model.PolicyRule;
 import java.util.List;
+
+import com.example.demo.model.PolicyRule;
 
 public interface PolicyRuleService {
 
@@ -11,7 +12,7 @@ public interface PolicyRuleService {
 
     List<PolicyRule> getActiveRules();
 
-    PolicyRule updateActiveStatus(Long id, boolean active);
+    PolicyRule updateRuleActive(Long id, boolean active);
 
     void deleteRule(Long id);
 }

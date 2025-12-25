@@ -1,19 +1,18 @@
 package com.example.demo.service;
 
-import com.example.demo.model.DeviceCatalogItem;
-
 import java.util.List;
-import java.util.Optional;
+
+import com.example.demo.model.DeviceCatalogItem;
 
 public interface DeviceCatalogService {
 
-    DeviceCatalogItem createDevice(DeviceCatalogItem device);
+    DeviceCatalogItem createItem(DeviceCatalogItem item);
 
-    DeviceCatalogItem updateDevice(Long id, DeviceCatalogItem device);
+    DeviceCatalogItem updateActiveStatus(Long id, boolean active);
 
-    void deleteDevice(Long id);
+    List<DeviceCatalogItem> getAllItems();
 
-    Optional<DeviceCatalogItem> getDeviceById(Long id);
+    DeviceCatalogItem getItemById(Long id);
 
-    List<DeviceCatalogItem> getAllDevices();
+    void deleteItem(Long id);
 }
