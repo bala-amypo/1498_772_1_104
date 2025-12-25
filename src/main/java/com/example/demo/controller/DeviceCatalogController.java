@@ -3,10 +3,6 @@ package com.example.demo.controller;
 import com.example.demo.model.DeviceCatalogItem;
 import com.example.demo.service.DeviceCatalogService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,54 +10,39 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/devices")
-@Tag(name = "Device Catalog Endpoints")
+
 public class DeviceCatalogController {
 
-    @Autowired
-    private DeviceCatalogService deviceService;
+    private final DeviceCatalogService service;
 
-    @Operation(summary = "Create a new device catalog item")
+    public DeviceCatalogController(DeviceCatalogService service) {
+        this.service = service;
+    }
+
+    @Operation(summary = "Create device catalog item")
     @PostMapping
-    public ResponseEntity<DeviceCatalogItem> createItem(
-            @Valid @RequestBody DeviceCatalogItem item
-    ) {
-        return new ResponseEntity<>(
-                deviceService.createItem(item),
-                HttpStatus.CREATED
-        );
+    public ResponseEntity<DeviceCatalogItem> create(
+            @RequestBody DeviceCatalogItem item) {
+        return ResponseEntity.ok(service.createItem(item));
     }
 
-    @Operation(summary = "Get all device catalog items")
+    @Operation(summary = "Get all device items")
     @GetMapping
-    public ResponseEntity<List<DeviceCatalogItem>> getAllItems() {
-        return ResponseEntity.ok(deviceService.getAllItems());
+    public ResponseEntity<List<DeviceCatalogItem>> getAll() {
+        return ResponseEntity.ok(service.getAllItems());
     }
 
-    @Operation(summary = "Get device catalog item by ID")
+    @Operation(summary = "Get device by id")
     @GetMapping("/{id}")
-    public ResponseEntity<DeviceCatalogItem> getItemById(
-            @PathVariable Long id
-    ) {
-        return ResponseEntity.ok(deviceService.getItemById(id));
+    public ResponseEntity<DeviceCatalogItem> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getById(id));
     }
 
     @Operation(summary = "Update device active status")
     @PutMapping("/{id}/active")
-    public ResponseEntity<DeviceCatalogItem> updateActiveStatus(
+    public ResponseEntity<DeviceCatalogItem> updateStatus(
             @PathVariable Long id,
-            @RequestParam boolean active
-    ) {
-        return ResponseEntity.ok(
-                deviceService.updateActiveStatus(id, active)
-        );
-    }
-
-    @Operation(summary = "Delete device catalog item")
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteItem(
-            @PathVariable Long id
-    ) {
-        deviceService.deleteItem(id);
-        return ResponseEntity.noContent().build();
+            @RequestParam boolean active) {
+        return ResponseEntity.ok(service.updateActiveStatus(id, active));
     }
 }
