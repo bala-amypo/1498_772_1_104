@@ -10,9 +10,7 @@ public interface DeviceCatalogService {
 
     DeviceCatalogItem updateActiveStatus(Long id, boolean active);
 
-    DeviceCatalogItem getItemById(Long id);
-
     List<DeviceCatalogItem> getAllItems();
 
-    void deleteItem(Long id);
+    DeviceCatalogItem getById(Long id);
 }
