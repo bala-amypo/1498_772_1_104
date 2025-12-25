@@ -4,9 +4,6 @@ import com.example.demo.model.PolicyRule;
 import com.example.demo.service.PolicyRuleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,49 +14,40 @@ import java.util.List;
 @Tag(name = "Policy Rules Endpoints")
 public class PolicyRuleController {
 
-    @Autowired
-    private PolicyRuleService policyRuleService;
+    private final PolicyRuleService service;
 
-    @Operation(summary = "Create a new policy rule")
+    public PolicyRuleController(PolicyRuleService service) {
+        this.service = service;
+    }
+
+    @Operation(summary = "Create policy rule")
     @PostMapping
-    public ResponseEntity<PolicyRule> createRule(
-            @Valid @RequestBody PolicyRule rule
-    ) {
-        return new ResponseEntity<>(
-                policyRuleService.createRule(rule),
-                HttpStatus.CREATED
-        );
+    public ResponseEntity<PolicyRule> create(@RequestBody PolicyRule rule) {
+        return ResponseEntity.ok(service.createRule(rule));
     }
 
     @Operation(summary = "Get all policy rules")
     @GetMapping
-    public ResponseEntity<List<PolicyRule>> getAllRules() {
-        return ResponseEntity.ok(policyRuleService.getAllRules());
+    public ResponseEntity<List<PolicyRule>> getAll() {
+        return ResponseEntity.ok(service.getAllRules());
     }
 
     @Operation(summary = "Get active policy rules")
     @GetMapping("/active")
-    public ResponseEntity<List<PolicyRule>> getActiveRules() {
-        return ResponseEntity.ok(policyRuleService.getActiveRules());
+    public ResponseEntity<List<PolicyRule>> getActive() {
+        return ResponseEntity.ok(service.getActiveRules());
     }
 
-    @Operation(summary = "Update policy rule active status")
+    @Operation(summary = "Update rule active status")
     @PutMapping("/{id}/active")
-    public ResponseEntity<PolicyRule> updateActiveStatus(
-            @PathVariable Long id,
-            @RequestParam boolean active
-    ) {
-        return ResponseEntity.ok(
-                policyRuleService.updateActiveStatus(id, active)
-        );
+    public ResponseEntity<PolicyRule> updateStatus(@PathVariable Long id, @RequestParam boolean active) {
+        return ResponseEntity.ok(service.updateRuleStatus(id, active));
     }
 
     @Operation(summary = "Delete policy rule")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteRule(
-            @PathVariable Long id
-    ) {
-        policyRuleService.deleteRule(id);
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        service.deleteRule(id);
         return ResponseEntity.noContent().build();
     }
 }
