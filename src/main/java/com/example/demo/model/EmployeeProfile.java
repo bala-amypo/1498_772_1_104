@@ -1,18 +1,15 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-
 import java.time.LocalDateTime;
 
 @Entity
 @Table(
-    name = "employee_profiles",
-    uniqueConstraints = {
-        @UniqueConstraint(columnNames = "employeeId"),
-        @UniqueConstraint(columnNames = "email")
-    }
+        name = "employee_profiles",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = "employee_id"),
+                @UniqueConstraint(columnNames = "email")
+        }
 )
 public class EmployeeProfile {
 
@@ -20,20 +17,15 @@ public class EmployeeProfile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
-    @Column(nullable = false, unique = true)
+    @Column(name = "employee_id", nullable = false, unique = true)
     private String employeeId;
 
-    @NotBlank
     @Column(nullable = false)
     private String fullName;
 
-    @NotBlank
-    @Email
     @Column(nullable = false, unique = true)
     private String email;
 
-    @NotBlank
     @Column(nullable = false)
     private String department;
 
@@ -46,9 +38,10 @@ public class EmployeeProfile {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    
+    /* ================== CONSTRUCTORS ================== */
 
     public EmployeeProfile() {
+        // default constructor
     }
 
     public EmployeeProfile(
@@ -62,39 +55,78 @@ public class EmployeeProfile {
         this.fullName = fullName;
         this.email = email;
         this.department = department;
-        this.jobRole = jobRole != null ? jobRole : "STAFF";
+        this.jobRole = (jobRole != null) ? jobRole : "STAFF";
         this.active = true;
     }
+
+    /* ================== LIFECYCLE CALLBACK ================== */
 
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
+        if (this.active == null) {
+            this.active = true;
+        }
         if (this.jobRole == null) {
             this.jobRole = "STAFF";
         }
     }
 
-    
+    /* ================== GETTERS & SETTERS ================== */
 
-    public Long getId() { return id; }
+    public Long getId() {
+        return id;
+    }
 
-    public String getEmployeeId() { return employeeId; }
-    public void setEmployeeId(String employeeId) { this.employeeId = employeeId; }
+    public String getEmployeeId() {
+        return employeeId;
+    }
 
-    public String getFullName() { return fullName; }
-    public void setFullName(String fullName) { this.fullName = fullName; }
+    public void setEmployeeId(String employeeId) {
+        this.employeeId = employeeId;
+    }
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    public String getFullName() {
+        return fullName;
+    }
 
-    public String getDepartment() { return department; }
-    public void setDepartment(String department) { this.department = department; }
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
 
-    public String getJobRole() { return jobRole; }
-    public void setJobRole(String jobRole) { this.jobRole = jobRole; }
+    public String getEmail() {
+        return email;
+    }
 
-    public Boolean getActive() { return active; }
-    public void setActive(Boolean active) { this.active = active; }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    public String getJobRole() {
+        return jobRole;
+    }
+
+    public void setJobRole(String jobRole) {
+        this.jobRole = (jobRole != null) ? jobRole : "STAFF";
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
 }

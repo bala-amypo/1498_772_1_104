@@ -13,6 +13,4 @@ public interface EmployeeProfileService {
     List<EmployeeProfile> getAllEmployees();
 
     EmployeeProfile updateEmployeeStatus(Long id, boolean active);
-
-    void deleteEmployee(Long id);
 }
