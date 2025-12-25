@@ -10,7 +10,9 @@ public interface IssuedDeviceRecordService {
 
     IssuedDeviceRecord returnDevice(Long recordId);
 
+    List<IssuedDeviceRecord> getAllIssuedDevices();
+
     List<IssuedDeviceRecord> getIssuedDevicesByEmployee(Long employeeId);
 
-    IssuedDeviceRecord getIssuedDeviceById(Long id);
+    List<IssuedDeviceRecord> getActiveIssuedDevices();
 }
