@@ -1,14 +1,16 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(
     name = "policy_rules",
-    uniqueConstraints = @UniqueConstraint(columnNames = "ruleCode")
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = "ruleCode")
+    }
 )
-public class PolicyRule implements Serializable {
+public class PolicyRule {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,6 +19,7 @@ public class PolicyRule implements Serializable {
     @Column(nullable = false, unique = true)
     private String ruleCode;
 
+    @Column
     private String description;
 
     @Column
@@ -31,8 +34,12 @@ public class PolicyRule implements Serializable {
     @Column(nullable = false)
     private Boolean active = true;
 
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
     // Default constructor
     public PolicyRule() {
+        this.active = true;
     }
 
     // Parameterized constructor
@@ -42,7 +49,13 @@ public class PolicyRule implements Serializable {
         this.appliesToRole = appliesToRole;
         this.appliesToDepartment = appliesToDepartment;
         this.maxDevicesAllowed = maxDevicesAllowed;
-        this.active = active != null ? active : true;
+        this.active = (active != null) ? active : true;
+    }
+
+    // PrePersist to auto-set createdAt
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
     }
 
     // Getters and Setters
@@ -100,5 +113,13 @@ public class PolicyRule implements Serializable {
 
     public void setActive(Boolean active) {
         this.active = active;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }
