@@ -3,45 +3,40 @@ package com.example.demo.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(
-    name = "user_accounts",
-    uniqueConstraints = @UniqueConstraint(columnNames = "email")
-)
+@Table(name = "user_account")
 public class UserAccount {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
     private String fullName;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String email;
 
-    @Column(nullable = false)
-    private String passwordHash; // BCrypt hashed
+    private String passwordHash;
 
-    @Column(nullable = false)
     private String role; // ADMIN / IT_OPERATOR / AUDITOR
 
-    @Column(nullable = false)
-    private Boolean active = true;
+    private Boolean active;
 
-    // Default constructor
+    // No-argument constructor
     public UserAccount() {
     }
 
     // Parameterized constructor
-    public UserAccount(String fullName, String email, String passwordHash, String role, Boolean active) {
+    public UserAccount(String fullName, String email,
+                       String passwordHash, String role,
+                       Boolean active) {
         this.fullName = fullName;
         this.email = email;
         this.passwordHash = passwordHash;
         this.role = role;
-        this.active = active != null ? active : true;
+        this.active = active;
     }
 
-    // Getters and Setters
+    // getters and setters
     public Long getId() {
         return id;
     }

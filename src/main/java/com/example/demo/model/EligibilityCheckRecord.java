@@ -1,53 +1,93 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
+// import jakarta.persistence.PrePersist;
+
+
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "eligibility_check_records")
+@Table(name = "eligibility_check_record")
 public class EligibilityCheckRecord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "employee_id", nullable = false)
-    private EmployeeProfile employee;
+    private Long employeeId;
+    private Long deviceItemId;
+    private Boolean isEligible;
+    private String reason;
 
-    @ManyToOne
-    @JoinColumn(name = "device_id", nullable = false)
-    private DeviceCatalogItem device;
-
-    @Column(nullable = false)
-    private boolean eligible; // true if employee passed all policy checks
-
-    @Column(nullable = false)
     private LocalDateTime checkedAt;
 
-    private String reason; // reason for ineligibility, null if eligible
+    // Automatically set checkedAt before insert
+    @PrePersist
+    public void prePersist() {
+        if (this.checkedAt == null) {
+            this.checkedAt = LocalDateTime.now();
+        }
+    }
 
-    // ✅ Constructors
-    public EligibilityCheckRecord() {}
+    // No-argument constructor
+    public EligibilityCheckRecord() {
+    }
 
-    public EligibilityCheckRecord(EmployeeProfile employee, DeviceCatalogItem device, boolean eligible, LocalDateTime checkedAt, String reason) {
-        this.employee = employee;
-        this.device = device;
-        this.eligible = eligible;
-        this.checkedAt = checkedAt;
+    // Parameterized constructor
+    public EligibilityCheckRecord(Long employeeId, Long deviceItemId,
+                                  Boolean isEligible, String reason) {
+        this.employeeId = employeeId;
+        this.deviceItemId = deviceItemId;
+        this.isEligible = isEligible;
         this.reason = reason;
     }
 
-    // ✅ Getters & Setters
-    public Long getId() { return id; }
-    public EmployeeProfile getEmployee() { return employee; }
-    public void setEmployee(EmployeeProfile employee) { this.employee = employee; }
-    public DeviceCatalogItem getDevice() { return device; }
-    public void setDevice(DeviceCatalogItem device) { this.device = device; }
-    public boolean isEligible() { return eligible; }
-    public void setEligible(boolean eligible) { this.eligible = eligible; }
-    public LocalDateTime getCheckedAt() { return checkedAt; }
-    public void setCheckedAt(LocalDateTime checkedAt) { this.checkedAt = checkedAt; }
-    public String getReason() { return reason; }
-    public void setReason(String reason) { this.reason = reason; }
+    // getters and setters
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getEmployeeId() {
+        return employeeId;
+    }
+
+    public void setEmployeeId(Long employeeId) {
+        this.employeeId = employeeId;
+    }
+
+    public Long getDeviceItemId() {
+        return deviceItemId;
+    }
+
+    public void setDeviceItemId(Long deviceItemId) {
+        this.deviceItemId = deviceItemId;
+    }
+
+    public Boolean getIsEligible() {
+        return isEligible;
+    }
+
+    public void setIsEligible(Boolean isEligible) {
+        this.isEligible = isEligible;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
+
+    public LocalDateTime getCheckedAt() {
+        return checkedAt;
+    }
+
+    public void setCheckedAt(LocalDateTime checkedAt) {
+        this.checkedAt = checkedAt;
+    }
 }

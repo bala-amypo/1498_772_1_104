@@ -1,52 +1,46 @@
 package com.example.demo.controller;
 
+import java.util.List;
+
+import org.springframework.web.bind.annotation.*;
+
 import com.example.demo.model.PolicyRule;
 import com.example.demo.service.PolicyRuleService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/policy-rules")
-@Tag(name = "Policy Rules Endpoints")
 public class PolicyRuleController {
 
-    private final PolicyRuleService policyRuleService;
+    private final PolicyRuleService service;
 
-    public PolicyRuleController(PolicyRuleService policyRuleService) {
-        this.policyRuleService = policyRuleService;
+    public PolicyRuleController(PolicyRuleService service) {
+        this.service = service;
     }
 
     @PostMapping
-    @Operation(summary = "Create a policy rule")
-    public ResponseEntity<PolicyRule> createRule(@RequestBody PolicyRule rule) {
-        return ResponseEntity.ok(policyRuleService.createRule(rule));
+    public PolicyRule createRule(@RequestBody PolicyRule rule) {
+        return service.createRule(rule);
     }
 
     @GetMapping
-    @Operation(summary = "List all policy rules")
-    public ResponseEntity<List<PolicyRule>> getAllRules() {
-        return ResponseEntity.ok(policyRuleService.getAllRules());
+    public List<PolicyRule> getAllRules() {
+        return service.getAllRules();
     }
 
     @GetMapping("/active")
-    @Operation(summary = "List active policy rules")
-    public ResponseEntity<List<PolicyRule>> getActiveRules() {
-        return ResponseEntity.ok(policyRuleService.getActiveRules());
+    public List<PolicyRule> getActiveRules() {
+        return service.getActiveRules();
     }
 
     @PutMapping("/{id}/active")
-    @Operation(summary = "Update active status of a policy rule")
-    public ResponseEntity<PolicyRule> updateActiveStatus(@PathVariable Long id, @RequestParam boolean active) {
-        return ResponseEntity.ok(policyRuleService.updateActiveStatus(id, active));
+    public PolicyRule updateActiveStatus(
+            @PathVariable Long id,
+            @RequestParam boolean active) {
+        return service.updateRuleActive(id, active);
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Delete a policy rule")
-    public ResponseEntity<Void> deleteRule(@PathVariable Long id) {
-        policyRuleService.deleteRule(id);
-        return ResponseEntity.noContent().build();
+    public void deleteRule(@PathVariable Long id) {
+        service.deleteRule(id);
     }
 }

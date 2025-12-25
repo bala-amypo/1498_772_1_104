@@ -1,66 +1,52 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.EmployeeProfile;
-import com.example.demo.service.EmployeeProfileService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import java.util.List;
+
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import com.example.demo.model.EmployeeProfile;
+import com.example.demo.service.EmployeeProfileService;
 
 @RestController
 @RequestMapping("/api/employees")
-@Tag(name = "Employee Profile Endpoints")
 public class EmployeeProfileController {
 
-    private final EmployeeProfileService employeeProfileService;
+    private final EmployeeProfileService service;
 
-    // ✅ Constructor Injection ONLY
-    public EmployeeProfileController(EmployeeProfileService employeeProfileService) {
-        this.employeeProfileService = employeeProfileService;
+    public EmployeeProfileController(EmployeeProfileService service) {
+        this.service = service;
     }
 
-    @Operation(summary = "Create a new employee profile")
+    // POST /api/employees
     @PostMapping
-    public ResponseEntity<EmployeeProfile> createEmployee(
-            @RequestBody EmployeeProfile employeeProfile) {
-
-        EmployeeProfile created =
-                employeeProfileService.createEmployee(employeeProfile);
-        return new ResponseEntity<>(created, HttpStatus.CREATED);
+    public EmployeeProfile createEmployee(
+            @RequestBody EmployeeProfile employee) {
+        return service.createEmployee(employee);
     }
 
-    @Operation(summary = "Get all employee profiles")
+    // GET /api/employees
     @GetMapping
-    public ResponseEntity<List<EmployeeProfile>> getAllEmployees() {
-        return ResponseEntity.ok(employeeProfileService.getAllEmployees());
+    public List<EmployeeProfile> getAllEmployees() {
+        return service.getAllEmployees();
     }
 
-    @Operation(summary = "Get employee profile by ID")
+    // GET /api/employees/{id}
     @GetMapping("/{id}")
-    public ResponseEntity<EmployeeProfile> getEmployeeById(@PathVariable Long id) {
-        return ResponseEntity.ok(employeeProfileService.getEmployeeById(id));
+    public EmployeeProfile getEmployeeById(@PathVariable Long id) {
+        return service.getEmployeeById(id);
     }
 
-    @Operation(summary = "Update employee active status")
+    // PUT /api/employees/{id}/status?active=true
     @PutMapping("/{id}/status")
-    public ResponseEntity<EmployeeProfile> updateEmployeeStatus(
+    public EmployeeProfile updateStatus(
             @PathVariable Long id,
             @RequestParam boolean active) {
-
-        EmployeeProfile updated =
-                employeeProfileService.updateEmployeeStatus(id, active);
-        return ResponseEntity.ok(updated);
+        return service.updateEmployeeStatus(id, active);
     }
 
-    @Operation(summary = "Delete employee profile")
+    // DELETE /api/employees/{id}
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
-
-        // Optional: if delete is required by tests later, we’ll add service method
-        employeeProfileService.getEmployeeById(id);
-        return ResponseEntity.noContent().build();
+    public void deleteEmployee(@PathVariable Long id) {
+        service.deleteEmployee(id);
     }
 }

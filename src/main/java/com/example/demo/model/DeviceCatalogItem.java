@@ -1,67 +1,44 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
-@Table(
-        name = "device_catalog_items",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = "device_code")
-        }
-)
+@Table(name = "device_catalog_item")
 public class DeviceCatalogItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "device_code", nullable = false, unique = true)
+    @Column(unique = true)
     private String deviceCode;
 
-    @Column(nullable = false)
-    private String deviceType; // LAPTOP / MONITOR / KEYBOARD / MOUSE / PHONE / TABLET
-
-    @Column(nullable = false)
+    private String deviceType;
     private String model;
-
-    @Column(nullable = false)
     private Integer maxAllowedPerEmployee;
+    private Boolean active;
 
-    @Column(nullable = false)
-    private Boolean active = true;
-
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
-    /* ================== CONSTRUCTORS ================== */
-
+    // No-argument constructor
     public DeviceCatalogItem() {
-        // default constructor
     }
 
-    public DeviceCatalogItem(String deviceCode, String deviceType, String model, Integer maxAllowedPerEmployee, Boolean active) {
+    // Parameterized constructor
+    public DeviceCatalogItem(String deviceCode, String deviceType,String model, Integer maxAllowedPerEmployee,Boolean active) {
+                             
         this.deviceCode = deviceCode;
         this.deviceType = deviceType;
         this.model = model;
         this.maxAllowedPerEmployee = maxAllowedPerEmployee;
-        this.active = (active != null) ? active : true;
+        this.active = active;
     }
 
-    /* ================== LIFECYCLE CALLBACK ================== */
-
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-        if (this.active == null) {
-            this.active = true;
-        }
-    }
-
-    /* ================== GETTERS & SETTERS ================== */
-
+    // getters and setters
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getDeviceCode() {
@@ -102,9 +79,5 @@ public class DeviceCatalogItem {
 
     public void setActive(Boolean active) {
         this.active = active;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
     }
 }

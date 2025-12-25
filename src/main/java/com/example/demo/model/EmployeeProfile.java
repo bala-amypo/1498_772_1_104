@@ -4,78 +4,55 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(
-        name = "employee_profiles",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = "employee_id"),
-                @UniqueConstraint(columnNames = "email")
-        }
-)
+@Table(name = "employee_profile")
 public class EmployeeProfile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "employee_id", nullable = false, unique = true)
+    @Column(unique = true)
     private String employeeId;
 
-    @Column(nullable = false)
     private String fullName;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String email;
 
-    @Column(nullable = false)
     private String department;
-
-    @Column(nullable = false)
     private String jobRole;
+    private Boolean active;
 
-    @Column(nullable = false)
-    private Boolean active = true;
-
-    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    /* ================== CONSTRUCTORS ================== */
-
-    public EmployeeProfile() {
-        // default constructor
+    // Automatically set createdAt before insert
+    @PrePersist
+    public void setCreatedAt() {
+        this.createdAt = LocalDateTime.now();
     }
 
-    public EmployeeProfile(
-            String employeeId,
-            String fullName,
-            String email,
-            String department,
-            String jobRole
-    ) {
+    // No-argument constructor
+    public EmployeeProfile() {
+    }
+
+    // Parameterized constructor
+    public EmployeeProfile(String employeeId, String fullName, String email,
+                           String department, String jobRole, Boolean active) {
         this.employeeId = employeeId;
         this.fullName = fullName;
         this.email = email;
         this.department = department;
-        this.jobRole = (jobRole != null) ? jobRole : "STAFF";
-        this.active = true;
+        this.jobRole = jobRole;
+        this.active = active;
     }
 
-    /* ================== LIFECYCLE CALLBACK ================== */
-
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-        if (this.active == null) {
-            this.active = true;
-        }
-        if (this.jobRole == null) {
-            this.jobRole = "STAFF";
-        }
-    }
-
-    /* ================== GETTERS & SETTERS ================== */
-
+    // getters and setters
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getEmployeeId() {
@@ -115,7 +92,7 @@ public class EmployeeProfile {
     }
 
     public void setJobRole(String jobRole) {
-        this.jobRole = (jobRole != null) ? jobRole : "STAFF";
+        this.jobRole = jobRole;
     }
 
     public Boolean getActive() {
@@ -128,5 +105,9 @@ public class EmployeeProfile {
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }

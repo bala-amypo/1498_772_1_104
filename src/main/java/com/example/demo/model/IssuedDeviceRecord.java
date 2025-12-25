@@ -1,52 +1,82 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
-@Table(name = "issued_device_records")
+@Table(name = "issued_device_record")
 public class IssuedDeviceRecord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "employee_id", nullable = false)
-    private EmployeeProfile employee;
+    private Long employeeId;
+    private Long deviceItemId;
 
-    @ManyToOne
-    @JoinColumn(name = "device_id", nullable = false)
-    private DeviceCatalogItem device;
+    private LocalDate issuedDate;
+    private LocalDate returnedDate;
 
-    @Column(nullable = false)
-    private LocalDateTime issuedAt;
+    private String status; // ISSUED / RETURNED
 
-    private LocalDateTime returnedAt;
-
-    @Column(nullable = false)
-    private boolean active; // true if device is currently issued
-
-    // ✅ Constructors
-    public IssuedDeviceRecord() {}
-
-    public IssuedDeviceRecord(EmployeeProfile employee, DeviceCatalogItem device, LocalDateTime issuedAt, boolean active) {
-        this.employee = employee;
-        this.device = device;
-        this.issuedAt = issuedAt;
-        this.active = active;
+    // No-argument constructor
+    public IssuedDeviceRecord() {
     }
 
-    // ✅ Getters & Setters
-    public Long getId() { return id; }
-    public EmployeeProfile getEmployee() { return employee; }
-    public void setEmployee(EmployeeProfile employee) { this.employee = employee; }
-    public DeviceCatalogItem getDevice() { return device; }
-    public void setDevice(DeviceCatalogItem device) { this.device = device; }
-    public LocalDateTime getIssuedAt() { return issuedAt; }
-    public void setIssuedAt(LocalDateTime issuedAt) { this.issuedAt = issuedAt; }
-    public LocalDateTime getReturnedAt() { return returnedAt; }
-    public void setReturnedAt(LocalDateTime returnedAt) { this.returnedAt = returnedAt; }
-    public boolean isActive() { return active; }
-    public void setActive(boolean active) { this.active = active; }
+    // Parameterized constructor
+    public IssuedDeviceRecord(Long employeeId, Long deviceItemId) {
+        this.employeeId = employeeId;
+        this.deviceItemId = deviceItemId;
+        this.issuedDate = LocalDate.now();
+        this.status = "ISSUED";
+    }
+
+    // getters and setters
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getEmployeeId() {
+        return employeeId;
+    }
+
+    public void setEmployeeId(Long employeeId) {
+        this.employeeId = employeeId;
+    }
+
+    public Long getDeviceItemId() {
+        return deviceItemId;
+    }
+
+    public void setDeviceItemId(Long deviceItemId) {
+        this.deviceItemId = deviceItemId;
+    }
+
+    public LocalDate getIssuedDate() {
+        return issuedDate;
+    }
+
+    public void setIssuedDate(LocalDate issuedDate) {
+        this.issuedDate = issuedDate;
+    }
+
+    public LocalDate getReturnedDate() {
+        return returnedDate;
+    }
+
+    public void setReturnedDate(LocalDate returnedDate) {
+        this.returnedDate = returnedDate;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }

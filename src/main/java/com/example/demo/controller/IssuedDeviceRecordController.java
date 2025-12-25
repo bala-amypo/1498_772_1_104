@@ -1,18 +1,15 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.IssuedDeviceRecord;
-import com.example.demo.service.IssuedDeviceRecordService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.http.HttpStatus;
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import com.example.demo.model.IssuedDeviceRecord;
+import com.example.demo.service.IssuedDeviceRecordService;
 
 @RestController
 @RequestMapping("/api/issued-devices")
-@Tag(name = "Issued Device Endpoints")
 public class IssuedDeviceRecordController {
 
     private final IssuedDeviceRecordService service;
@@ -21,33 +18,27 @@ public class IssuedDeviceRecordController {
         this.service = service;
     }
 
-    @Operation(summary = "Issue a device to an employee")
+    // POST /api/issued-devices
     @PostMapping
-    public ResponseEntity<IssuedDeviceRecord> issueDevice(@RequestBody IssuedDeviceRecord record) {
-        IssuedDeviceRecord issued = service.issueDevice(record);
-        return new ResponseEntity<>(issued, HttpStatus.CREATED);
+    public ResponseEntity<IssuedDeviceRecord> issueDevice(
+            @RequestBody IssuedDeviceRecord record) {
+        return ResponseEntity.ok(service.issueDevice(record));
     }
 
-    @Operation(summary = "Return a device")
+    // PUT /api/issued-devices/{id}/return
     @PutMapping("/{id}/return")
     public ResponseEntity<IssuedDeviceRecord> returnDevice(@PathVariable Long id) {
-        IssuedDeviceRecord returned = service.returnDevice(id);
-        return ResponseEntity.ok(returned);
+        return ResponseEntity.ok(service.returnDevice(id));
     }
 
-    @Operation(summary = "Get all issued devices")
-    @GetMapping
-    public ResponseEntity<List<IssuedDeviceRecord>> getAllIssuedDevices() {
-        return ResponseEntity.ok(service.getAllIssuedDevices());
+    // GET /api/issued-devices/employee/{employeeId}
+    @GetMapping("/employee/{employeeId}")
+    public ResponseEntity<List<IssuedDeviceRecord>> getByEmployee(
+            @PathVariable Long employeeId) {
+        return ResponseEntity.ok(service.getByEmployeeId(employeeId));
     }
 
-    @Operation(summary = "Get all active issued devices")
-    @GetMapping("/active")
-    public ResponseEntity<List<IssuedDeviceRecord>> getActiveIssuedDevices() {
-        return ResponseEntity.ok(service.getActiveIssuedDevices());
-    }
-
-    @Operation(summary = "Get issued device by ID")
+    // GET /api/issued-devices/{id}
     @GetMapping("/{id}")
     public ResponseEntity<IssuedDeviceRecord> getById(@PathVariable Long id) {
         return ResponseEntity.ok(service.getById(id));
