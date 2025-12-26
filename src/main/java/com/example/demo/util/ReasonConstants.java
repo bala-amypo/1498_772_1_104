@@ -1,13 +1,15 @@
 package com.example.demo.util;
 
-public final class ReasonConstants {
-
-    private ReasonConstants() {}
+public class ReasonConstants {
 
     public static final String EMPLOYEE_INACTIVE = "not active";
-    public static final String DEVICE_INACTIVE = "inactive";
-    public static final String ACTIVE_ISSUANCE = "active issuance";
-    public static final String POLICY_VIOLATION = "Policy violation";
-    public static final String MAX_DEVICES = "Maximum allowed devices";
+    public static final String DEVICE_INACTIVE = "device inactive";
+    public static final String ACTIVE_ISSUANCE = "active issuance exists";
+    public static final String POLICY_VIOLATION = "policy violation";
+    public static final String MAX_DEVICES = "maximum allowed devices reached";
     public static final String ALREADY_RETURNED = "already returned";
+    
+    
+    public static final String EMPLOYEE_OR_DEVICE_NOT_FOUND = "Employee or Device not found";
+    public static final String ELIGIBLE = "Eligible";
 }
