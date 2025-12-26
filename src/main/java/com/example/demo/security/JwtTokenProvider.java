@@ -16,12 +16,12 @@ public class JwtTokenProvider {
 
     public String generateToken(com.example.demo.model.UserAccount user) {
         return Jwts.builder()
-                .setSubject(user.getEmail())
-                .claim("role", user.getRole())
-                .claim("userId", user.getId())
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + validityInMs))
-                .signWith(key)
+                .setSubject(user.getEmail())            // Subject = email
+                .claim("role", user.getRole())          // Add role
+                .claim("userId", user.getId())          // Add userId
+                .setIssuedAt(new Date())                // Issue time
+                .setExpiration(new Date(System.currentTimeMillis() + validityInMs)) // Expiry
+                .signWith(key)                          // Sign with HS256
                 .compact();
     }
 
@@ -36,23 +36,22 @@ public class JwtTokenProvider {
 
     public String getUsername(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+                   .parseClaimsJws(token)
+                   .getBody()
+                   .getSubject();
     }
 
-    // ✅ Add this method to fix your compilation error
     public String getRoleFromToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build()
-                .parseClaimsJws(token)
-                .getBody()
-                .get("role", String.class);
+                   .parseClaimsJws(token)
+                   .getBody()
+                   .get("role", String.class);
     }
 
     public Long getUserIdFromToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build()
-                .parseClaimsJws(token)
-                .getBody()
-                .get("userId", Long.class);
+                   .parseClaimsJws(token)
+                   .getBody()
+                   .get("userId", Long.class);
     }
 }
