@@ -25,11 +25,11 @@ public class EmployeeProfile {
 
     private LocalDateTime createdAt;
 
-    // Automatically set createdAt before insert
     @PrePersist
-    public void setCreatedAt() {
-        this.createdAt = LocalDateTime.now();
-    }
+    public void onCreate() {
+    this.createdAt = DateTimeUtil.nowIfNull(this.createdAt);
+}
+
 
     // No-argument constructor
     public EmployeeProfile() {
