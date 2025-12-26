@@ -26,12 +26,7 @@ public class AuthController {
         return userRepo.save(user);
     }
 
-    // --- Existing login endpoint (original behavior) ---
-    @PostMapping("/login")
-    public String login() {
-        return "Successfully login";
-    }
-
+   
     // --- New login with token generation ---
     @PostMapping("/login-token")
     public ResponseEntity<AuthResponse> loginWithToken(@RequestBody AuthRequest request) {
