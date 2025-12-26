@@ -19,14 +19,14 @@ public class JwtTokenProvider {
     private int validityInMs;
     private Key key;
 
-    // ✅ constructor REQUIRED by test cases
+    
     public JwtTokenProvider(String secretKey, int validityInMs) {
         this.secretKey = secretKey;
         this.validityInMs = validityInMs;
         this.key = Keys.hmacShaKeyFor(secretKey.getBytes());
     }
 
-    // ✅ default constructor for Spring
+    
     public JwtTokenProvider() {
         this.secretKey = "employee-equipment-secret-key-1234567890";
         this.validityInMs = 3600000; // 1 hour
