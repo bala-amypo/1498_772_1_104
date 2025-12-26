@@ -7,6 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import com.example.demo.model.UserAccount;
 
@@ -14,6 +15,8 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.util.Collections;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -35,14 +38,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String token = header.substring(7);
 
             if (tokenProvider.validateToken(token)) {
-                String username = tokenProvider.getUsername(token);
 
-                // In your simplified model, we just create a dummy Authentication
+                // ✅ JWT la irundhu data edukkrom
+                String email = tokenProvider.getEmailFromToken(token);
+                String role  = tokenProvider.getRoleFromToken(token);
+
                 UserAccount user = new UserAccount();
-                user.setEmail(username);
+                user.setEmail(email);
+                user.setRole(role);
 
-                Authentication auth = new UsernamePasswordAuthenticationToken(
-                        user, null, null);
+                Authentication auth =
+                        new UsernamePasswordAuthenticationToken(
+                                user,
+                                null,
+                                Collections.singletonList(
+                                        new SimpleGrantedAuthority("ROLE_" + role)
+                                )
+                        );
 
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
