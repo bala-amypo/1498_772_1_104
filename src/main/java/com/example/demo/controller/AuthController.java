@@ -22,6 +22,6 @@ public class AuthController {
 
     @PostMapping("/login")
     public String login() {
-        return "Successfully login"; // dummy
+        return "Successfully login"; 
     }
 }
