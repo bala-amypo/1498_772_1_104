@@ -2,50 +2,56 @@ package com.example.demo.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import com.example.demo.dto.AuthRequest;
-import com.example.demo.dto.AuthResponse;
-import com.example.demo.exception.BadRequestException;
 import com.example.demo.model.UserAccount;
 import com.example.demo.repository.UserAccountRepository;
 import com.example.demo.security.JwtTokenProvider;
+import com.example.demo.dto.AuthRequest;
+import com.example.demo.dto.AuthResponse;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
     private final UserAccountRepository userRepo;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider jwtProvider;
 
-    public AuthController(UserAccountRepository userRepo, JwtTokenProvider jwtTokenProvider) {
+    public AuthController(UserAccountRepository userRepo, JwtTokenProvider jwtProvider) {
         this.userRepo = userRepo;
-        this.jwtTokenProvider = jwtTokenProvider;
+        this.jwtProvider = jwtProvider;
     }
 
-    // ---------------- REGISTER ----------------
+    // --- Existing register endpoint ---
     @PostMapping("/register")
     public UserAccount register(@RequestBody UserAccount user) {
         return userRepo.save(user);
     }
 
-    // ---------------- LOGIN ----------------
+    // --- Existing login endpoint (original behavior) ---
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
+    public String login() {
+        return "Successfully login";
+    }
 
-        // 1️⃣ Find user by email
+    // --- New login with token generation ---
+    @PostMapping("/login-token")
+    public ResponseEntity<AuthResponse> loginWithToken(@RequestBody AuthRequest request) {
         UserAccount user = userRepo.findByEmail(request.getEmail())
-                .orElseThrow(() -> new BadRequestException("Invalid email or password"));
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // 2️⃣ Check password (stored as passwordHash)
+        // Simple password check (you can replace with hash check)
         if (!user.getPasswordHash().equals(request.getPassword())) {
-            throw new BadRequestException("Invalid email or password");
+            throw new RuntimeException("Invalid credentials");
         }
 
-        // 3️⃣ Generate JWT token
-        String token = jwtTokenProvider.generateToken(user);
+        String token = jwtProvider.generateToken(user);
 
-        // 4️⃣ Return token + user info
-        AuthResponse response = new AuthResponse(token, user.getId(), user.getEmail(), user.getRole());
+        AuthResponse response = new AuthResponse(
+                token,
+                user.getId(),
+                user.getEmail(),
+                user.getRole()
+        );
+
         return ResponseEntity.ok(response);
     }
 }
