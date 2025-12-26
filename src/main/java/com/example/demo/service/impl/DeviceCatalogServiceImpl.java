@@ -25,7 +25,7 @@ public class DeviceCatalogServiceImpl implements DeviceCatalogService {
         // ✅ Invalid max limit
         if (item.getMaxAllowedPerEmployee() == null ||
             item.getMaxAllowedPerEmployee() <= 0) {
-            throw new BadRequestException("maxAllowedPerEmployee");
+            throw new BadRequestException("maxAllowedPerEmployee should be >= 1");
         }
 
         // ✅ Duplicate device code
