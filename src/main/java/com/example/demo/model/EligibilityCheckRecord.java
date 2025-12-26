@@ -21,13 +21,11 @@ public class EligibilityCheckRecord {
 
     private LocalDateTime checkedAt;
 
-    // Automatically set checkedAt before insert
-    @PrePersist
-    public void prePersist() {
-        if (this.checkedAt == null) {
-            this.checkedAt = LocalDateTime.now();
-        }
-    }
+    
+@PrePersist
+public void onCreate() {
+    this.checkedAt = DateTimeUtil.nowIfNull(this.checkedAt);
+}
 
     // No-argument constructor
     public EligibilityCheckRecord() {
