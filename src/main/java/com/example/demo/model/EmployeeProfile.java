@@ -1,5 +1,5 @@
 package com.example.demo.model;
-import com.example.demo.util.DateTimeUtil;
+
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -25,11 +25,11 @@ public class EmployeeProfile {
 
     private LocalDateTime createdAt;
 
+    // Automatically set createdAt before insert
     @PrePersist
-    public void onCreate() {
-    this.createdAt = DateTimeUtil.nowIfNull(this.createdAt);
-}
-
+    public void setCreatedAt() {
+        this.createdAt = LocalDateTime.now();
+    }
 
     // No-argument constructor
     public EmployeeProfile() {

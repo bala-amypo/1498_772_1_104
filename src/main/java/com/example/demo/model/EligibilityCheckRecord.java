@@ -1,5 +1,5 @@
 package com.example.demo.model;
-import com.example.demo.util.DateTimeUtil;
+
 import jakarta.persistence.*;
 // import jakarta.persistence.PrePersist;
 
@@ -21,11 +21,13 @@ public class EligibilityCheckRecord {
 
     private LocalDateTime checkedAt;
 
-    
-@PrePersist
-public void onCreate() {
-    this.checkedAt = DateTimeUtil.nowIfNull(this.checkedAt);
-}
+    // Automatically set checkedAt before insert
+    @PrePersist
+    public void prePersist() {
+        if (this.checkedAt == null) {
+            this.checkedAt = LocalDateTime.now();
+        }
+    }
 
     // No-argument constructor
     public EligibilityCheckRecord() {
