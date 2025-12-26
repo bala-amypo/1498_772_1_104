@@ -32,33 +32,49 @@ public class IssuedDeviceRecordServiceImpl implements IssuedDeviceRecordService 
         this.deviceRepo = deviceRepo;
     }
 
+    /* ---------------- ISSUE DEVICE ---------------- */
+
     @Override
     public IssuedDeviceRecord issueDevice(IssuedDeviceRecord record) {
 
+        // 🔹 Mandatory field checks
+        if (record.getEmployeeId() == null) {
+            throw new BadRequestException("EmployeeId is required");
+        }
+
+        if (record.getDeviceItemId() == null) {
+            throw new BadRequestException("DeviceItemId is required");
+        }
+
+        // 🔹 Employee validation
         EmployeeProfile employee = employeeRepo.findById(record.getEmployeeId())
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Employee not found"));
 
-        if (!employee.getActive()) {
-            throw new BadRequestException("not active");
+        if (Boolean.FALSE.equals(employee.getActive())) {
+            throw new BadRequestException("Employee is not active");
         }
 
+        // 🔹 Device validation
         DeviceCatalogItem device = deviceRepo.findById(record.getDeviceItemId())
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Device not found"));
 
-        if (!device.getActive()) {
-            throw new BadRequestException("inactive");
+        if (Boolean.FALSE.equals(device.getActive())) {
+            throw new BadRequestException("Device is inactive");
         }
 
-        // ❌ Any active issuance exists
+        // 🔹 Check existing active issuance
         long activeIssued =
-                issuedRepo.countByEmployeeIdAndStatus(record.getEmployeeId(), "ISSUED");
+                issuedRepo.countByEmployeeIdAndStatus(
+                        record.getEmployeeId(), "ISSUED");
 
         if (activeIssued > 0) {
-            throw new BadRequestException("active issuance");
+            throw new BadRequestException(
+                    "Employee already has an active issued device");
         }
 
+        // 🔹 Set system values
         record.setIssuedDate(LocalDate.now());
         record.setReturnedDate(null);
         record.setStatus("ISSUED");
@@ -66,15 +82,19 @@ public class IssuedDeviceRecordServiceImpl implements IssuedDeviceRecordService 
         return issuedRepo.save(record);
     }
 
+    /* ---------------- RETURN DEVICE ---------------- */
+
     @Override
     public IssuedDeviceRecord returnDevice(Long recordId) {
 
         IssuedDeviceRecord record = issuedRepo.findById(recordId)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Issued record not found"));
+                        new ResourceNotFoundException(
+                                "Issued device record not found"));
 
         if ("RETURNED".equals(record.getStatus())) {
-            throw new BadRequestException("already returned");
+            throw new BadRequestException(
+                    "Device already returned");
         }
 
         record.setStatus("RETURNED");
@@ -83,6 +103,8 @@ public class IssuedDeviceRecordServiceImpl implements IssuedDeviceRecordService 
         return issuedRepo.save(record);
     }
 
+    /* ---------------- FETCH METHODS ---------------- */
+
     @Override
     public List<IssuedDeviceRecord> getByEmployeeId(Long employeeId) {
         return issuedRepo.findByEmployeeId(employeeId);
@@ -90,18 +112,21 @@ public class IssuedDeviceRecordServiceImpl implements IssuedDeviceRecordService 
 
     @Override
     public List<IssuedDeviceRecord> getActiveByEmployeeId(Long employeeId) {
-        return issuedRepo.findByEmployeeIdAndStatus(employeeId, "ISSUED");
+        return issuedRepo.findByEmployeeIdAndStatus(
+                employeeId, "ISSUED");
     }
 
     @Override
     public IssuedDeviceRecord getById(Long id) {
         return issuedRepo.findById(id)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Issued record not found"));
+                        new ResourceNotFoundException(
+                                "Issued device record not found"));
     }
 
     @Override
     public long countActiveDevicesForEmployee(Long employeeId) {
-        return issuedRepo.countByEmployeeIdAndStatus(employeeId, "ISSUED");
+        return issuedRepo.countByEmployeeIdAndStatus(
+                employeeId, "ISSUED");
     }
 }
