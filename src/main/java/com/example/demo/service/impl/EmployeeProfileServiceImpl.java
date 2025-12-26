@@ -9,7 +9,6 @@ import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.EmployeeProfile;
 import com.example.demo.repository.EmployeeProfileRepository;
 import com.example.demo.service.EmployeeProfileService;
-import com.example.demo.util.JobRoleUtil;  // ✅ Added
 
 @Service
 public class EmployeeProfileServiceImpl implements EmployeeProfileService {
@@ -37,11 +36,6 @@ public class EmployeeProfileServiceImpl implements EmployeeProfileService {
         if (employee.getActive() == null) {
             employee.setActive(true);
         }
-
-        // ✅ Set default jobRole if null
-        employee.setJobRole(
-                JobRoleUtil.defaultIfNull(employee.getJobRole())
-        );
 
         return repo.save(employee);
     }
