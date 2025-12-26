@@ -14,6 +14,7 @@ import com.example.demo.repository.DeviceCatalogItemRepository;
 import com.example.demo.repository.EmployeeProfileRepository;
 import com.example.demo.repository.IssuedDeviceRecordRepository;
 import com.example.demo.service.IssuedDeviceRecordService;
+import com.example.demo.util.ReasonConstants; // ✅ Added
 
 @Service
 public class IssuedDeviceRecordServiceImpl implements IssuedDeviceRecordService {
@@ -33,11 +34,8 @@ public class IssuedDeviceRecordServiceImpl implements IssuedDeviceRecordService 
     }
 
     /* ---------------- ISSUE DEVICE ---------------- */
-
     @Override
     public IssuedDeviceRecord issueDevice(IssuedDeviceRecord record) {
-
-        // 🔹 Mandatory field checks
         if (record.getEmployeeId() == null) {
             throw new BadRequestException("EmployeeId is required");
         }
@@ -46,7 +44,6 @@ public class IssuedDeviceRecordServiceImpl implements IssuedDeviceRecordService 
             throw new BadRequestException("DeviceItemId is required");
         }
 
-        // 🔹 Employee validation
         EmployeeProfile employee = employeeRepo.findById(record.getEmployeeId())
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Employee not found"));
@@ -55,7 +52,6 @@ public class IssuedDeviceRecordServiceImpl implements IssuedDeviceRecordService 
             throw new BadRequestException("Employee is not active");
         }
 
-        // 🔹 Device validation
         DeviceCatalogItem device = deviceRepo.findById(record.getDeviceItemId())
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Device not found"));
@@ -64,7 +60,6 @@ public class IssuedDeviceRecordServiceImpl implements IssuedDeviceRecordService 
             throw new BadRequestException("Device is inactive");
         }
 
-        // 🔹 Check existing active issuance
         long activeIssued =
                 issuedRepo.countByEmployeeIdAndStatus(
                         record.getEmployeeId(), "ISSUED");
@@ -74,7 +69,6 @@ public class IssuedDeviceRecordServiceImpl implements IssuedDeviceRecordService 
                     "Employee already has an active issued device");
         }
 
-        // 🔹 Set system values
         record.setIssuedDate(LocalDate.now());
         record.setReturnedDate(null);
         record.setStatus("ISSUED");
@@ -83,7 +77,6 @@ public class IssuedDeviceRecordServiceImpl implements IssuedDeviceRecordService 
     }
 
     /* ---------------- RETURN DEVICE ---------------- */
-
     @Override
     public IssuedDeviceRecord returnDevice(Long recordId) {
 
@@ -92,9 +85,11 @@ public class IssuedDeviceRecordServiceImpl implements IssuedDeviceRecordService 
                         new ResourceNotFoundException(
                                 "Issued device record not found"));
 
+        // ✅ Use constant instead of hardcoded string
         if ("RETURNED".equals(record.getStatus())) {
             throw new BadRequestException(
-                    "Device already returned");
+                    ReasonConstants.ALREADY_RETURNED
+            );
         }
 
         record.setStatus("RETURNED");
@@ -104,7 +99,6 @@ public class IssuedDeviceRecordServiceImpl implements IssuedDeviceRecordService 
     }
 
     /* ---------------- FETCH METHODS ---------------- */
-
     @Override
     public List<IssuedDeviceRecord> getByEmployeeId(Long employeeId) {
         return issuedRepo.findByEmployeeId(employeeId);
