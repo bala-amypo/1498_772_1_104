@@ -39,7 +39,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             if (tokenProvider.validateToken(token)) {
 
-                // ✅ JWT la irundhu data edukkrom
+                
                 String email = tokenProvider.getUsername(token);
 
                 String role  = tokenProvider.getRoleFromToken(token);
