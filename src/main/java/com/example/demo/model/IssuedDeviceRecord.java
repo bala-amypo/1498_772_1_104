@@ -11,22 +11,19 @@ public class IssuedDeviceRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
     private Long employeeId;
-
-    @Column(nullable = false)
     private Long deviceItemId;
 
-    @Column(nullable = false)
     private LocalDate issuedDate;
-
     private LocalDate returnedDate;
 
-    @Column(nullable = false)
     private String status; // ISSUED / RETURNED
 
-    public IssuedDeviceRecord() {}
+    // No-argument constructor
+    public IssuedDeviceRecord() {
+    }
 
+    // Parameterized constructor
     public IssuedDeviceRecord(Long employeeId, Long deviceItemId) {
         this.employeeId = employeeId;
         this.deviceItemId = deviceItemId;
@@ -34,22 +31,52 @@ public class IssuedDeviceRecord {
         this.status = "ISSUED";
     }
 
-    // getters & setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    // getters and setters
+    public Long getId() {
+        return id;
+    }
 
-    public Long getEmployeeId() { return employeeId; }
-    public void setEmployeeId(Long employeeId) { this.employeeId = employeeId; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public Long getDeviceItemId() { return deviceItemId; }
-    public void setDeviceItemId(Long deviceItemId) { this.deviceItemId = deviceItemId; }
+    public Long getEmployeeId() {
+        return employeeId;
+    }
 
-    public LocalDate getIssuedDate() { return issuedDate; }
-    public void setIssuedDate(LocalDate issuedDate) { this.issuedDate = issuedDate; }
+    public void setEmployeeId(Long employeeId) {
+        this.employeeId = employeeId;
+    }
 
-    public LocalDate getReturnedDate() { return returnedDate; }
-    public void setReturnedDate(LocalDate returnedDate) { this.returnedDate = returnedDate; }
+    public Long getDeviceItemId() {
+        return deviceItemId;
+    }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public void setDeviceItemId(Long deviceItemId) {
+        this.deviceItemId = deviceItemId;
+    }
+
+    public LocalDate getIssuedDate() {
+        return issuedDate;
+    }
+
+    public void setIssuedDate(LocalDate issuedDate) {
+        this.issuedDate = issuedDate;
+    }
+
+    public LocalDate getReturnedDate() {
+        return returnedDate;
+    }
+
+    public void setReturnedDate(LocalDate returnedDate) {
+        this.returnedDate = returnedDate;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }
